@@ -171,6 +171,9 @@ jobs:
       id-token: write
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download Allure results
         uses: actions/download-artifact@v4
         with:
@@ -193,6 +196,10 @@ jobs:
           allure_results: allure-results
           allure_history: allure-history
           keep_reports: 20
+
+      - name: Strip nested git metadata from report
+        if: always()
+        run: rm -rf allure-history/.git
 
       - name: Publish Allure report to GitHub Pages
         if: always()
