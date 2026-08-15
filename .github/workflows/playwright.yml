@@ -51,12 +51,16 @@ jobs:
           path: test-results/
           retention-days: 30
 
+      - name: Rename JSON report
+        if: always()
+        run: mv test-results.json test-results-shard-${{ matrix.shard }}.json
+
       - name: Upload JSON report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: json-report-${{ matrix.shard }}
-          path: test-results.json
+          path: test-results-shard-${{ matrix.shard }}.json
           retention-days: 30
 
   publish-report:

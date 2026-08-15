@@ -30,7 +30,13 @@ const totals = { expected: 0, unexpected: 0, flaky: 0, skipped: 0 };
 
 const files = fs.readdirSync(inputDir).filter((f) => f.endsWith('.json'));
 for (const file of files) {
-  const data = JSON.parse(fs.readFileSync(path.join(inputDir, file), 'utf8'));
+  let data;
+  try {
+    data = JSON.parse(fs.readFileSync(path.join(inputDir, file), 'utf8'));
+  } catch (err) {
+    console.warn(`Skipping unreadable report ${file}: ${err.message}`);
+    continue;
+  }
   for (const suite of data.suites || []) collectRows(suite, rows);
   if (data.stats) {
     totals.expected += data.stats.expected || 0;
