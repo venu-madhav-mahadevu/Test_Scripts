@@ -47,3 +47,9 @@ test('Verify navigation menu exists', async ({ page }) => {
   const navMenu = page.locator('nav, [role="navigation"]').first();
   await expect(navMenu).toBeVisible();
 });
+
+test('Check page title_test', async ({ page }) => {
+  await page.goto('https://www.dell.com/en-us');
+  const title = await page.title();
+  expect(title).toContain('Dell');
+});
