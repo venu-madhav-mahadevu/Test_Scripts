@@ -22,7 +22,9 @@ export default defineConfig({
   /* Run more workers in parallel on CI's shared runners. */
   workers: process.env.CI ? 4 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'blob' : 'html',
+  reporter: process.env.CI
+    ? [['blob'], ['json', { outputFile: 'test-results.json' }]]
+    : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -30,6 +32,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /* Record video only when a test fails. */
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
