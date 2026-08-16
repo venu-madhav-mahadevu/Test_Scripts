@@ -1,0 +1,51 @@
+name: 'Upload Playwright artifacts'
+description: 'Renames the JSON report and uploads blob, JSON, Allure, and raw test-results artifacts for one CI suite'
+
+inputs:
+  suite-name:
+    description: 'Unique suffix for this suite (e.g. smoke, regression, e2e-1, country-us)'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Rename JSON report
+      if: always()
+      shell: bash
+      run: mv test-results.json test-results-${{ inputs.suite-name }}.json
+
+    - name: Upload blob report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: blob-report-${{ inputs.suite-name }}
+        path: blob-report/
+        retention-days: 30
+        if-no-files-found: ignore
+
+    - name: Upload JSON report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: json-report-${{ inputs.suite-name }}
+        path: test-results-${{ inputs.suite-name }}.json
+        retention-days: 30
+        if-no-files-found: ignore
+
+    - name: Upload Allure results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results-${{ inputs.suite-name }}
+        path: allure-results/
+        retention-days: 30
+        if-no-files-found: ignore
+
+    - name: Upload raw test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ inputs.suite-name }}
+        path: test-results/
+        retention-days: 30
+        if-no-files-found: ignore
